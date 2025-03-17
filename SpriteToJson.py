@@ -30,10 +30,10 @@ def convertFile(file: str, sourcedir: str, outdir: str, one_file_mode: bool) -> 
     im.close()
 
     if (not one_file_mode):
-        outfile = open(outdir +"/" + spriteName + ".json", "w")
+        outfile = open(outdir + "/" + spriteName + ".json", "w")
         outfile.write("{")
     else:
-        outfile = open(outdir +"/output.json", "a")
+        outfile = open(outdir + "/output.json", "a")
 
     outfile.write('\n"' + spriteName + '": {\n')
     outfile.write('"width": ' + str(width) + ',\n')
@@ -61,7 +61,7 @@ def main():
 
     if (not os.path.exists(args.outdir)):
         os.makedirs(args.outdir)
-    
+
     if (args.one):
         f = open(args.outdir + "/output.json", "w")
         f.write("{")
@@ -79,6 +79,7 @@ def main():
         f = open(args.outdir + "/output.json", "a")
         f.write("}\n")
         f.close()
+
 
 if __name__ == "__main__":
     main()
