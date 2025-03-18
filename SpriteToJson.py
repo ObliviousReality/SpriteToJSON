@@ -21,7 +21,6 @@ class Palette:
             colour = (elems[0], elems[1], elems[2])
             val = elems[3]
             self._palette_value_map[colour] = val
-        print(self._palette_value_map)
 
     def getVal(self, colour: tuple) -> int:
         return self._palette_value_map[colour] if colour in self._palette_value_map else 0
