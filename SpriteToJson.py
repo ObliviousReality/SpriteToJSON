@@ -56,8 +56,9 @@ def convertFile(file: str, sourcedir: str, outdir: str, one_file_mode: bool, pal
         outfile.write("{")
     else:
         outfile = open(outdir + "/output.json", "a")
-
-    outfile.write('\n"' + spriteName + '": {\n')
+    outfile.write("\n")
+    if (one_file_mode):
+        outfile.write('"' + spriteName + '": {\n')
     outfile.write('"width": ' + str(width) + ',\n')
     outfile.write('"height": ' + str(height) + ',\n')
     outfile.write('"data": [\n')
@@ -68,8 +69,10 @@ def convertFile(file: str, sourcedir: str, outdir: str, one_file_mode: bool, pal
         else:
             outfile.write('[' + ",".join(item) + '],\n')
             count += 1
-    outfile.write(']\n}\n')
-    if (not one_file_mode):
+    outfile.write(']\n')
+    if (one_file_mode):
+        outfile.write("\n}")
+    else:
         outfile.write('}')
     outfile.close()
 
