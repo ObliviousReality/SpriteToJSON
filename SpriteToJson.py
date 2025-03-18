@@ -4,7 +4,30 @@ import os
 from PIL import Image
 
 
-def convertFile(file: str, sourcedir: str, outdir: str, one_file_mode: bool) -> None:
+class Palette:
+    _palette_value_map = {}
+
+    def __init__(self, path: str):
+        palFile = open(path, 'r')
+        palData = palFile.readlines()
+        palFile.close()
+        for line in palData:
+            line = line.strip()
+            elems = line.split(',')
+            elems = list(map(int, elems))
+            if (len(elems) != 4):
+                print("Palette File is invalid!")
+                quit()
+            colour = (elems[0], elems[1], elems[2])
+            val = elems[3]
+            self._palette_value_map[colour] = val
+        print(self._palette_value_map)
+
+    def getVal(self, colour: tuple) -> int:
+        return self._palette_value_map[colour] if colour in self._palette_value_map else 0
+
+
+def convertFile(file: str, sourcedir: str, outdir: str, one_file_mode: bool, palette: Palette) -> None:
     spriteName, spriteType = file.split(".")
 
     if (spriteType != "png"):
@@ -21,7 +44,7 @@ def convertFile(file: str, sourcedir: str, outdir: str, one_file_mode: bool) -> 
         buf = []
         for j in i:
             try:
-                buf.append("0" if j[2] == 255 else "1")
+                buf.append(str(palette.getVal((j[0], j[1], j[2]))))
             except Exception:
                 print(
                     f"File: '{file}' has an incorrect bit-depth. Files must have a bit-depth of 32 bits.")
@@ -57,7 +80,10 @@ def main():
     parser.add_argument("-sourcedir", default='./sprites')
     parser.add_argument('-outdir', default="./out")
     parser.add_argument('-one', action='store_true', default=False)
+    parser.add_argument('-p', '-palette', default='./standardPalette.csv')
     args = parser.parse_args()
+
+    palette = Palette(args.p)
 
     if (not os.path.exists(args.outdir)):
         os.makedirs(args.outdir)
@@ -69,7 +95,7 @@ def main():
 
     file_list = os.listdir(args.sourcedir)
     for file in file_list:
-        convertFile(file, args.sourcedir, args.outdir, args.one)
+        convertFile(file, args.sourcedir, args.outdir, args.one, palette)
         if (args.one and (file_list.index(file) != len(file_list) - 1)):
             f = open(args.outdir + "/output.json", "a")
             f.write(",")
